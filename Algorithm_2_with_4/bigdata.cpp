@@ -173,7 +173,6 @@ int main(){
 //////////////////////////////////////////////////////////////////////////
 std::cout << "Now client is making a query" << std::endl;
 
-// Step 1: l개의 Torus64Polynomial 동적 할당 (message)
 std::cout << "[Step 1] Allocating and initializing message..." << std::endl;
 Torus64Polynomial** message = new Torus64Polynomial*[l];
 for (int i = 0; i < l; i++) {
@@ -181,7 +180,6 @@ for (int i = 0; i < l; i++) {
     for (int j = 0; j < N; j++) message[i]->coefs[j] = 0;
 }
 
-// Step 2: bit 정보를 이용해 message 설정
 std::cout << "[Step 2] Setting up message coefficients using bit information..." << std::endl;
 for (int i = 0; i < l; i++) {
     for (int32_t j = log2m - 1; j >= 0; --j) {
@@ -189,7 +187,6 @@ for (int i = 0; i < l; i++) {
     }
 }
 
-// Step 3: l개의 TLweSample64 암호문 동적 할당 (cipher)
 std::cout << "[Step 3] Encrypting messages into cipher..." << std::endl;
 TLweSample64** cipher = new TLweSample64*[l];
 for (int i = 0; i < l; i++) {
@@ -197,7 +194,6 @@ for (int i = 0; i < l; i++) {
     tLwe64Encrypt_debug(cipher[i], message[i], alpha1, env);
 }
 
-// Step 4: info_sk 생성 (N 개)
 std::cout << "[Step 4] Creating info_sk..." << std::endl;
 IntPolynomiala** info_sk = new IntPolynomiala*[N];
 for (int iter = 0; iter < N; ++iter) {
@@ -208,7 +204,7 @@ for (int iter = 0; iter < N; ++iter) {
     info_sk[iter]->coefs[0] = env->tlwekey->coefs[iter];
 }
 
-// Step 5: ksk 생성 (N 개)
+
 std::cout << "[Step 5] Generating key switching keys (ksk)..." << std::endl;
 TGswSample64** ksk = new TGswSample64*[N];
 for (int i = 0; i < N; i++) {
@@ -216,14 +212,14 @@ for (int i = 0; i < N; i++) {
     KSKGen_RGSW_2_debug(ksk[i], info_sk[i], env);
 }
 
-// Step 6: cipher_prime 생성
+
 std::cout << "[Step 6] Running packing algorithm2..." << std::endl;
 
 TLweSample64*** cipher_prime = new TLweSample64**[l];
 auto start_total = std::chrono::high_resolution_clock::now();
 
-double total_time = 0.0;  // 전체 실행 시간 누적
-int count = 0;             // 실행 횟수 카운트
+double total_time = 0.0;  
+int count = 0;            
 
 for (int i = 0; i < l; i++) {
     cipher_prime[i] = new TLweSample64*[log2m];
@@ -238,34 +234,34 @@ for (int i = 0; i < l; i++) {
 
         // 개별 실행 시간 저장
         std::chrono::duration<double, std::milli> duration = end - start;
-        total_time += duration.count();  // 총 시간 누적
-        count++;                         // 실행 횟수 증가
+        total_time += duration.count();  
+        count++;                        
     }
 }
 
 auto end_total = std::chrono::high_resolution_clock::now();
 std::chrono::duration<double, std::milli> total_duration = end_total - start_total;
 
-// 평균 시간 계산
+
 double avg_time = (count > 0) ? (total_time / count) : 0.0;
 
 std::cout << "Packing (Algorithm2) done." << std::endl;
 std::cout << "Total execution time: " << total_duration.count() << " ms" << std::endl;
 std::cout << "Average execution time per packing: " << avg_time << " ms" << std::endl;
 
-// Step 7: minus_sk 생성
+
 std::cout << "[Step 7] Generating negative secret key..." << std::endl;
 IntPolynomiala* minus_sk = new IntPolynomiala(N);
 for (int i = 0; i < N; i++) {
     minus_sk->coefs[i] = -env->tlwekey->coefs[i];
 }
 
-// Step 8: convk 생성 및 암호화
+
 std::cout << "[Step 8] Encrypting convk..." << std::endl;
 TGswSample64* convk = new TGswSample64(l, N);
 tGsw64Encrypt_poly_2(convk, minus_sk, pow(2., -55), env);
 
-// Step 9: extract 생성 및 unpacking_algorithm4 실행
+
 std::cout << "[Step 9] Running unpacking_algorithm4...(RGSW ciphertexts)" << std::endl;
 TGswSample64* extract = new_array1<TGswSample64>(log2m, l, N);
 TGswSampleFFTa* extFFT = new_array1<TGswSampleFFTa>(log2m, l, N);
@@ -482,7 +478,7 @@ j=0;
   std::chrono::duration<double,std::milli> execution_time11 = end11-start11;
   std::cout <<" answer decode takes: "<< execution_time11.count()<<" ms "<<std::endl;
 
-  // 🔹 decrypt와 indexdata의 처음 10개 coefficient 출력
+
 std::cout << "🔹 decrypt coefficients (first 10): ";
 for (int i = 0; i < 10; ++i) {
     std::cout << decrypt->coefs[i] << " ";
