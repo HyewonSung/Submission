@@ -1043,7 +1043,7 @@ void unpacking_algorithm4(TGswSample64* result, const TLweSample64** rlweInputs,
     const int l = env->l;            
     const int N = env->N;            
 
-    // 결과 초기화
+
     for (int k = 0; k <= env->k; ++k) {
         for (int i = 0; i < l; ++i) {
             for (int j = 0; j < N; ++j) {

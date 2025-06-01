@@ -227,12 +227,11 @@ for (int i = 0; i < l; i++) {
         cipher_prime[i][j] = new TLweSample64(N);
         int32_t index = j;
 
-        // 실행 시간 측정
+
         auto start = std::chrono::high_resolution_clock::now();
         packing_algorithm2(cipher_prime[i][j], const_cast<const TGswSample64**>(ksk), cipher[i], index, env);
         auto end = std::chrono::high_resolution_clock::now();
 
-        // 개별 실행 시간 저장
         std::chrono::duration<double, std::milli> duration = end - start;
         total_time += duration.count();  
         count++;                        
@@ -284,7 +283,7 @@ std::cout << "Query unpacking step takes: " << execution_time0.count() << " ms" 
 
 
 
-// 메모리 해제
+
 /*
 std::cout << "[Cleanup] Freeing allocated memory..." << std::endl;
 for (int i = 0; i < l; i++) {

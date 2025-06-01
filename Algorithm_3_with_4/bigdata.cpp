@@ -193,7 +193,7 @@ Torus64Polynomial** message_scaled_by_N = new Torus64Polynomial*[l];
 for (int i = 0; i < l; i++) {
     message_scaled_by_N[i] = new Torus64Polynomial(N);
     for (int j = 0; j < N; j++) {
-        message_scaled_by_N[i]->coefs[j] = message[i]->coefs[j] / N; // N으로 나누기
+        message_scaled_by_N[i]->coefs[j] = message[i]->coefs[j] / N; 
     }
 }
 
